@@ -1,0 +1,43 @@
+{
+    "logs": [
+        {
+            "outputFile": "D:\\TCC\\Limpo\\Flutter_Projects-main\\justsing\\build\\app\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-night-v8\\values-night-v8.xml",
+            "map": [
+                {
+                    "source": "D:\\TCC\\Limpo\\Flutter_Projects-main\\justsing\\android\\app\\src\\main\\res\\values-night\\styles.xml",
+                    "from": {
+                        "startLines": "3,-1",
+                        "startColumns": "4,-1",
+                        "startOffsets": "172,-1",
+                        "endLines": "11,-1",
+                        "endColumns": "12,-1",
+                        "endOffsets": "746,-1"
+                    },
+                    "to": {
+                        "startLines": "2,11",
+                        "startColumns": "4,4",
+                        "startOffsets": "55,634",
+                        "endLines": "10,13",
+                        "endColumns": "12,12",
+                        "endOffsets": "629,798"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\Kelvyn\\.gradle\\caches\\transforms-3\\401d857f92aa695a3b100f9eb20df4d5\\transformed\\appcompat-1.5.1\\res\\values-night-v8\\values-night-v8.xml",
+                    "from": {
+                        "startLines": "-1,-1,-1,-1,-1,-1,-1,-1",
+                        "startColumns": "-1,-1,-1,-1,-1,-1,-1,-1",
+                        "startOffsets": "-1,-1,-1,-1,-1,-1,-1,-1"
+                    },
+                    "to": {
+                        "startLines": "14,15,16,17,18,19,20,21",
+                        "startColumns": "4,4,4,4,4,4,4,4",
+                        "startOffsets": "803,873,957,1041,1137,1239,1341,1435",
+                        "endColumns": "69,83,83,95,101,101,93,88",
+                        "endOffsets": "868,952,1036,1132,1234,1336,1430,1519"
+                    }
+                }
+            ]
+        }
+    ]
+}

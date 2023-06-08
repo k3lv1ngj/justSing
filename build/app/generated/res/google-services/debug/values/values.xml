@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_web_client_id" translatable="false">192865739775-4j9ekr4ga42gl42tmr7egn0u99oo0k39.apps.googleusercontent.com</string>
+    <string name="gcm_defaultSenderId" translatable="false">192865739775</string>
+    <string name="google_api_key" translatable="false">AIzaSyCU2FW8w1GRkga0ODWUlNn5HasbOWx_o0o</string>
+    <string name="google_app_id" translatable="false">1:192865739775:android:48465fff3cbe5e527efdca</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyCU2FW8w1GRkga0ODWUlNn5HasbOWx_o0o</string>
+    <string name="google_storage_bucket" translatable="false">justsing-89e3a.appspot.com</string>
+    <string name="project_id" translatable="false">justsing-89e3a</string>
+</resources>
