@@ -229,8 +229,16 @@ class _LoginPageState extends State<LoginPage> {
             (route) => false);
       }
     } on FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('O email e a senha tem que ser preenchido')));
+      final email = _emailController.text;
+      final senha = _senhaController.text;
+
+      if (email.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('O email não pode estar vazio digite um email')));
+      } else if (senha.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('A senha não pode estar vazia digite uma senha')));
+      }
       setState(() {
         loading = false;
       });
@@ -241,6 +249,9 @@ class _LoginPageState extends State<LoginPage> {
       } else if (e.code == 'wrong-password') {
         ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Senha está incorreta')));
+      } else if (e.code == 'invalid-email') {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Email invalido por favor insira um email valido')));
       }
     }
   }

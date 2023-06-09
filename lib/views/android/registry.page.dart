@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:justsing/views/android/login.page.dart';
@@ -131,6 +133,7 @@ class _RegistryPageState extends State<RegistryPage> {
 
   @override
   Widget build(BuildContext context) {
+    final usuario = _usuarioController.text;
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -193,6 +196,14 @@ class _RegistryPageState extends State<RegistryPage> {
     setState(() {
       loading = true;
     });
+    final usuario = _usuarioController.text;
+    final email = _emailController.text;
+    final senha = _senhaController.text;
+
+    if (usuario.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('O usuario nao pode estar vazio digite um usuario')));
+    }
     try {
       UserCredential userCredential =
           await _firebaseAuth.createUserWithEmailAndPassword(
@@ -210,6 +221,14 @@ class _RegistryPageState extends State<RegistryPage> {
             (route) => false);
       }
     } on FirebaseAuthException catch (e) {
+      if (email.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('O email não pode estar vazio digite um email')));
+      } else if (senha.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('A senha não pode estar vazia digite uma senha')));
+      }
+
       setState(() {
         loading = false;
         if (e.code == 'weak-passoword') {

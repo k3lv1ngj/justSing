@@ -6,12 +6,12 @@
                 {
                     "source": "D:\\TCC\\Limpo\\Flutter_Projects-main\\justsing\\android\\app\\src\\main\\res\\values-v31\\styles.xml",
                     "from": {
-                        "startLines": "3,-1",
-                        "startColumns": "4,-1",
-                        "startOffsets": "173,-1",
-                        "endLines": "10,-1",
-                        "endColumns": "12,-1",
-                        "endOffsets": "696,-1"
+                        "startLines": "3,17",
+                        "startColumns": "4,4",
+                        "startOffsets": "173,1047",
+                        "endLines": "10,19",
+                        "endColumns": "12,12",
+                        "endOffsets": "696,1211"
                     },
                     "to": {
                         "startLines": "2,10",
