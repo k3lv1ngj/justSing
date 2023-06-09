@@ -16,6 +16,8 @@ class _RegistryPageState extends State<RegistryPage> {
   final _firebaseAuth = FirebaseAuth.instance;
 
   bool loading = false;
+  bool selecionado = false;
+  bool showPassword = false;
 
   Widget inputs() {
     return Column(
@@ -84,15 +86,33 @@ class _RegistryPageState extends State<RegistryPage> {
                 padding: EdgeInsets.symmetric(horizontal: 50),
                 child: TextFormField(
                   controller: _senhaController,
-                  obscureText: true,
+                  obscureText: showPassword == false ? true : false,
                   keyboardType: TextInputType.visiblePassword,
                   cursorColor: Colors.orange,
+                  onChanged: (value) {
+                    setState(() {
+                      selecionado = value.isNotEmpty;
+                    });
+                  },
                   decoration: InputDecoration(
                     labelText: 'Senha',
                     labelStyle: TextStyle(color: Colors.white),
                     filled: true,
                     fillColor: Colors.orange,
-                    suffixIcon: Icon(Icons.lock_outline, color: Colors.white),
+                    suffixIcon: GestureDetector(
+                      child: Icon(
+                          selecionado
+                              ? showPassword
+                                  ? Icons.visibility
+                                  : Icons.visibility_off
+                              : Icons.lock_outline,
+                          color: Colors.white),
+                      onTap: () {
+                        setState(() {
+                          showPassword = !showPassword;
+                        });
+                      },
+                    ),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25)),
                     focusedBorder: OutlineInputBorder(
@@ -179,6 +199,8 @@ class _RegistryPageState extends State<RegistryPage> {
               email: _emailController.text, password: _senhaController.text);
       if (userCredential != null) {
         await userCredential.user!.updateDisplayName(_usuarioController.text);
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Cadastro Realizado com Sucesso')));
 
         Navigator.pushAndRemoveUntil(
             context,
@@ -196,6 +218,9 @@ class _RegistryPageState extends State<RegistryPage> {
         } else if (e.code == 'email-already-in-use') {
           ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Email já está sendo usado')));
+        } else if (e.code == 'invalid-email') {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(const SnackBar(content: Text('Email Invalido')));
         }
       });
     }

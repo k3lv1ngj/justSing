@@ -1,6 +1,8 @@
 // ignore_for_file: prefer_const_constructors
 // ignore_for_file: prefer_const_literals_to_create_immutables
 
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:justsing/views/android/search.page.dart';
@@ -87,13 +89,36 @@ class _LoginPageState extends State<LoginPage> {
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 50),
           child: Align(
-            alignment: Alignment.centerRight,
-            child: TextButton(
-              onPressed: () => Navigator.of(context).pushNamed('/registry'),
-              child: Text(
-                'Cadastrar-se',
-                style: TextStyle(color: Colors.orange),
-              ),
+            //alignment: Alignment.centerRight,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                TextButton(
+                  onPressed: () {
+                    final email = _emailController.text;
+                    if (email.isNotEmpty) {
+                      resetPassoword();
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text(
+                              'Email não pode estar vazio, informe um email')));
+                    }
+                  },
+                  child: Text(
+                    'Esqueci a senha',
+                    style: TextStyle(
+                      color: Colors.orange,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pushNamed('/registry'),
+                  child: Text(
+                    'Cadastrar-se',
+                    style: TextStyle(color: Colors.orange),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -164,6 +189,26 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  resetPassoword() async {
+    try {
+      await FirebaseAuth.instance
+          .sendPasswordResetEmail(email: _emailController.text)
+          .then((value) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Email de recuperação enviado')));
+      });
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'invalid-email') {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('Email invalido')));
+      } else if (e.code == 'user-not-found') {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Email informado não está cadastrado')));
+      }
+    }
+    FocusManager.instance.primaryFocus?.unfocus();
+  }
+
   login() async {
     setState(() {
       loading = true;
@@ -184,12 +229,13 @@ class _LoginPageState extends State<LoginPage> {
             (route) => false);
       }
     } on FirebaseAuthException catch (e) {
-      print("fail oi ");
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('O email e a senha tem que ser preenchido')));
       setState(() {
         loading = false;
       });
       if (e.code == 'user-not=found') {
-        print("oi2");
+        print("Usuario não encontrado");
         ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Usuario não encontrado')));
       } else if (e.code == 'wrong-password') {

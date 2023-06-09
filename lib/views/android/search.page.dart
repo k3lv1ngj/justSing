@@ -23,7 +23,9 @@ class _SearchPageState extends State<SearchPage> {
   late StreamSubscription<ConnectivityResult> subscription;
   var isDeviceConnected = false;
   bool isAlertSet = false;
+
   final _firebaseAuth = FirebaseAuth.instance;
+
   bool _isListening = false;
   SpeechToText _speechToText = SpeechToText();
   bool _speechEnabled = false;
