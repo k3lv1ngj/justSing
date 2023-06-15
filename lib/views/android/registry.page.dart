@@ -203,45 +203,49 @@ class _RegistryPageState extends State<RegistryPage> {
     if (usuario.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text('O usuario nao pode estar vazio digite um usuario')));
-    }
-    try {
-      UserCredential userCredential =
-          await _firebaseAuth.createUserWithEmailAndPassword(
-              email: _emailController.text, password: _senhaController.text);
-      if (userCredential != null) {
-        await userCredential.user!.updateDisplayName(_usuarioController.text);
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Cadastro Realizado com Sucesso')));
-
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (context) => LoginPage(),
-            ),
-            (route) => false);
-      }
-    } on FirebaseAuthException catch (e) {
-      if (email.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('O email não pode estar vazio digite um email')));
-      } else if (senha.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('A senha não pode estar vazia digite uma senha')));
-      }
-
       setState(() {
         loading = false;
-        if (e.code == 'weak-passoword') {
-          ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Crie uma senha mais forte')));
-        } else if (e.code == 'email-already-in-use') {
-          ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Email já está sendo usado')));
-        } else if (e.code == 'invalid-email') {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(const SnackBar(content: Text('Email Invalido')));
-        }
       });
+    } else {
+      try {
+        UserCredential userCredential =
+            await _firebaseAuth.createUserWithEmailAndPassword(
+                email: _emailController.text, password: _senhaController.text);
+        if (userCredential != null) {
+          await userCredential.user!.updateDisplayName(_usuarioController.text);
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Cadastro Realizado com Sucesso')));
+
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) => LoginPage(),
+              ),
+              (route) => false);
+        }
+      } on FirebaseAuthException catch (e) {
+        if (email.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text('O email não pode estar vazio digite um email')));
+        } else if (senha.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text('A senha não pode estar vazia digite uma senha')));
+        }
+
+        setState(() {
+          loading = false;
+          if (e.code == 'weak-passoword') {
+            ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Crie uma senha mais forte')));
+          } else if (e.code == 'email-already-in-use') {
+            ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Email já está sendo usado')));
+          } else if (e.code == 'invalid-email') {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(const SnackBar(content: Text('Email Invalido')));
+          }
+        });
+      }
     }
   }
 }
