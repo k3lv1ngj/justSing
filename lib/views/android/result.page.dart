@@ -80,13 +80,14 @@ class _ViewAppState extends State<ViewApp> {
           String _title = video.title;
           String _urlImage = video.thumbnail.small.url ?? '';
 
-          await _firestore.collection('historico').add({
-            'uId': _firebaseAuth.currentUser!.uid,
-            'title': _title,
-            'thumb': _urlImage,
-            'link': _link,
-          });
-          print(_link);
+          if (_firebaseAuth.currentUser != null) {
+            await _firestore.collection('historico').add({
+              'uId': _firebaseAuth.currentUser!.uid,
+              'title': _title,
+              'thumb': _urlImage,
+              'link': _link,
+            });
+          }
           Navigator.push(
               context,
               MaterialPageRoute(

@@ -13,14 +13,15 @@ import 'package:speech_to_text/speech_to_text.dart';
 import 'package:justsing/views/android/profile.page.dart';
 
 class SearchPage extends StatefulWidget {
-  const SearchPage({super.key});
+  const SearchPage({Key? key}) : super(key: key);
 
   @override
-  State<SearchPage> createState() => _SearchPageState();
+  _SearchPageState createState() => _SearchPageState();
 }
 
 class _SearchPageState extends State<SearchPage> {
   late StreamSubscription<ConnectivityResult> subscription;
+
   var isDeviceConnected = false;
   bool isAlertSet = false;
 
@@ -30,6 +31,7 @@ class _SearchPageState extends State<SearchPage> {
   SpeechToText _speechToText = SpeechToText();
   bool _speechEnabled = false;
   String _lastWords = '';
+  Timer? _speechTimeoutTimer;
 
   @override
   void initState() {
@@ -47,6 +49,11 @@ class _SearchPageState extends State<SearchPage> {
           setState(() {
             isAlertSet = true;
           });
+        } else if (isDeviceConnected && isAlertSet) {
+          setState(() {
+            Navigator.pop(context);
+            isAlertSet = false;
+          });
         }
       },
     );
@@ -55,6 +62,7 @@ class _SearchPageState extends State<SearchPage> {
   @override
   void dispose() {
     subscription.cancel();
+    _speechTimeoutTimer?.cancel();
     super.dispose();
   }
 
@@ -63,11 +71,32 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void _startListening() async {
-    await _speechToText.listen(onResult: (SpeechRecognitionResult result) {
-      _lastWords = '';
+    await _speechToText.listen(
+      onResult: (SpeechRecognitionResult result) {
+        setState(() {
+          _lastWords = result.recognizedWords;
+        });
 
+        if (result.finalResult) {
+          _stopListening();
+          setState(() {
+            _isListening = false;
+          });
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ViewApp(lastWords: _lastWords),
+            ),
+          );
+        }
+      },
+    );
+
+    _speechTimeoutTimer = Timer(Duration(seconds: 5), () {
+      _stopListening();
       setState(() {
-        _lastWords = result.recognizedWords;
+        _isListening = false;
       });
     });
   }
@@ -84,6 +113,7 @@ class _SearchPageState extends State<SearchPage> {
 
   void _stopListening() async {
     await _speechToText.stop();
+    _speechTimeoutTimer?.cancel();
   }
 
   @override
@@ -91,48 +121,43 @@ class _SearchPageState extends State<SearchPage> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-          primarySwatch: Colors.orange,
-          scaffoldBackgroundColor: Colors.grey[850]),
+        primarySwatch: Colors.orange,
+        scaffoldBackgroundColor: Colors.grey[850],
+      ),
       home: Scaffold(
-        appBar: AppBar(title: Text('justSing!'), actions: [
-          _firebaseAuth.currentUser == null
-              ? GestureDetector(
-                  child: ElevatedButton(
-                    onPressed: () => Navigator.of(context).pushNamed('/login'),
-                    child: Text("Login"),
-                  ),
-                )
-              : GestureDetector(
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      var result =
-                          await Navigator.of(context).pushNamed('/profile');
-                      MaterialPageRoute(
+        appBar: AppBar(
+          title: Text('justSing!'),
+          actions: [
+            _firebaseAuth.currentUser == null
+                ? GestureDetector(
+                    child: ElevatedButton(
+                      onPressed: () =>
+                          Navigator.of(context).pushNamed('/login'),
+                      child: Text("Login"),
+                    ),
+                  )
+                : GestureDetector(
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        var result =
+                            await Navigator.of(context).pushNamed('/profile');
+                        MaterialPageRoute(
                           builder: (context) => ProfilePage(
-                                lastWords: _lastWords,
-                              ));
-                      setState(() {});
-                    },
-                    child: Icon(Icons.person),
-                  ),
-                )
-        ]),
+                            lastWords: _lastWords,
+                          ),
+                        );
+                        setState(() {});
+                      },
+                      child: Icon(Icons.person),
+                    ),
+                  )
+          ],
+        ),
         body: Column(
           children: [
             Text(
               "$_lastWords",
               style: TextStyle(color: Colors.amber, fontSize: 30),
-            ),
-            Container(
-              child: FloatingActionButton(
-                  backgroundColor: Colors.orange,
-                  onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ViewApp(
-                                lastWords: _lastWords,
-                              ))),
-                  child: Icon(Icons.search_outlined)),
             ),
           ],
         ),
@@ -147,7 +172,10 @@ class _SearchPageState extends State<SearchPage> {
             repeatPauseDuration: const Duration(milliseconds: 100),
             repeat: true,
             child: GestureDetector(
-              onTap: () => changeListeningState(),
+              onTap: () {
+                _lastWords = '';
+                changeListeningState();
+              },
               child: Container(
                 padding: EdgeInsets.all(15),
                 decoration: BoxDecoration(
