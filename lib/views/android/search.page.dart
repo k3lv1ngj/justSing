@@ -93,7 +93,7 @@ class _SearchPageState extends State<SearchPage> {
       },
     );
 
-    _speechTimeoutTimer = Timer(Duration(seconds: 5), () {
+    _speechTimeoutTimer = Timer(Duration(seconds: 10), () {
       _stopListening();
       setState(() {
         _isListening = false;

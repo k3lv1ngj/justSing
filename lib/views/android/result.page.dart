@@ -88,12 +88,18 @@ class _ViewAppState extends State<ViewApp> {
               'link': _link,
             });
           }
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => PlayerPage(
-                        link: _link,
-                      )));
+
+          if (_link != null) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => PlayerPage(
+                          link: _link,
+                        )));
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Video não disponível')));
+          }
         },
         child: Container(
           margin: EdgeInsets.symmetric(vertical: 7.0),
